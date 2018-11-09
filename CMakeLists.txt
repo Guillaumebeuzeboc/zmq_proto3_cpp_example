@@ -3,20 +3,9 @@ project(zmq_test)
 
 add_compile_options(-std=c++11)
 
-find_package(PkgConfig)
 find_package(Protobuf REQUIRED)
-find_package(cppzmq REQUIRED)
+find_package(ZeroMQ REQUIRED)
 
-pkg_check_modules(PC_ZeroMQ QUIET zmq)
-
-find_path(ZeroMQ_INCLUDE_DIR
-        NAMES zmq.hpp
-        PATHS ${PC_ZeroMQ_INCLUDE_DIRS}
-        )
-find_library(ZeroMQ_LIBRARY
-        NAMES zmq
-        PATHS ${PC_ZeroMQ_LIBRARY_DIRS}
-        )
 ##### Build messages
 file(GLOB ProtoFiles "${CMAKE_CURRENT_SOURCE_DIR}/msg/*.proto")
 PROTOBUF_GENERATE_CPP(ProtoSources ProtoHeaders ${ProtoFiles})
@@ -28,15 +17,14 @@ target_link_libraries(messages ${PROTOBUF_LIBRARY})
 ###########
 include_directories(
   include
+  ${ZeroMQ_INCLUDE_DIR}
   ${Protobuf_INCLUDE_DIRS}
   ${CMAKE_BINARY_DIR}
 )
 
 add_executable(${PROJECT_NAME}_sub src/subscriber.cpp)
-#add_executable(${PROJECT_NAME}_pub src/publisher.cpp)
+add_executable(${PROJECT_NAME}_pub src/publisher.cpp)
 
-target_include_directories(${PROJECT_NAME}_sub PUBLIC ${ZeroMQ_INCLUDE_DIR})
-#target_include_directories(${PROJECT_NAME}_pub PUBLIC ${ZeroMQ_INCLUDE_DIR})
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(${PROJECT_NAME}_sub
@@ -44,11 +32,11 @@ target_include_directories(${PROJECT_NAME}_sub PUBLIC ${ZeroMQ_INCLUDE_DIR})
      ${PROTOBUF_LIBRARIES}
      ${ZeroMQ_LIBRARY}
  )
-# target_link_libraries(${PROJECT_NAME}_pub
-#     messages
-#     ${ZeroMQ_LIBRARIES}
-#     ${PROTOBUF_LIBRARIES}
-# )
+ target_link_libraries(${PROJECT_NAME}_pub
+     messages
+     ${PROTOBUF_LIBRARIES}
+     ${ZeroMQ_LIBRARY}
+ )
 
 #############
 ## Install ##
