@@ -1,0 +1,23 @@
+syntax = "proto3";
+package nav;
+
+message Path {
+  string name = 1;
+  int32 id = 2;
+
+  enum MovementType {
+    POSITION = 0;
+    VELOCITY = 1;
+    EFFORT = 2;
+  }
+
+  message Point {
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    MovementType type = 4;
+  }
+
+  repeated Point point = 3;
+}
+
