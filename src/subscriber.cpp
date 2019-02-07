@@ -11,7 +11,7 @@ int main () {
     //  Prepare our context and socket
     zmq::context_t context(1);
     zmq::socket_t socket(context, ZMQ_SUB);
-    socket.connect("tcp://localhost:5563");
+    socket.connect("ipc:///tmp/feeds/0");
     std::string filter("hello");
     socket.setsockopt( ZMQ_SUBSCRIBE, filter.c_str(), filter.length());
 

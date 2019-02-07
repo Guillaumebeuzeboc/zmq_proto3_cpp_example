@@ -37,7 +37,7 @@ int main ()
     zmq::socket_t socket (context, ZMQ_PUB);
 
     std::cout << "Connecting to server" << std::endl;
-    socket.bind ("tcp://*:5563");
+    socket.bind ("ipc:///tmp/feeds/0");
 
     while(true){
         std::string msg_str;
